@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern CSS Variables */
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #6c757d;
+            --success: #4cc9f0;
+            --danger: #e5383b;
+            --warning: #f9c74f;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: #f5f7f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: block;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            animation: modalFadeIn 0.3s;
+            overflow: hidden;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--gray-100);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .close {
+            color: var(--gray-500);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--dark);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Member Profile Styles */
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+            }
+        }
+
+        .profile-image {
+            flex-shrink: 0;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            font-size: 4rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+            color: var(--gray-800);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-active {
+            background-color: rgba(76, 201, 240, 0.15);
+            color: #168aad;
+        }
+
+        .status-inactive {
+            background-color: rgba(229, 56, 59, 0.15);
+            color: #a4161a;
+        }
+
+        .membership-badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .membership-NORMAL {
+            background-color: rgba(67, 97, 238, 0.15);
+            color: var(--primary-dark);
+        }
+
+        .membership-PREMIUM {
+            background-color: rgba(249, 199, 79, 0.15);
+            color: #f8961e;
+        }
+
+        .membership-VIP {
+            background-color: rgba(168, 85, 247, 0.15);
+            color: #7b2cbf;
+        }
+
+        /* Subscription Card */
+        .subscription-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .subscription-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subscription-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .subscription-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        th {
+            background-color: var(--gray-100);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            color: var(--gray-700);
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tr:hover {
+            background-color: var(--gray-50);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: var(--danger);
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(229, 56, 59, 0.1);
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            border-left: 4px solid var(--danger);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            .profile-details, .subscription-details {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: 12px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Member Profile Modal -->
+    <div id="memberProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Member Profile</h2>
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-image" id="profileImage">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2 class="profile-name" id="profileName">Loading...</h2>
+                            <div class="profile-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Member ID</span>
+                                    <span class="detail-value" id="profileId">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Phone</span>
+                                    <span class="detail-value" id="profilePhone">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Join Date</span>
+                                    <span class="detail-value" id="profileJoinDate">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Status</span>
+                                    <span class="detail-value" id="profileStatus">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Membership Type</span>
+                                    <span class="detail-value" id="profileMembership">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subscription Card -->
+                    <div class="subscription-card">
+                        <h3 class="subscription-title">
+                            <i class="fas fa-tag"></i> Current Subscription
+                        </h3>
+                        <div class="subscription-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Offer</span>
+                                <span class="detail-value" id="subscriptionOffer">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Start Date</span>
+                                <span class="detail-value" id="subscriptionStart">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">End Date</span>
+                                <span class="detail-value" id="subscriptionEnd">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Remaining Sessions</span>
+                                <span class="detail-value" id="subscriptionRemaining">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Status</span>
+                                <span class="subscription-status" id="subscriptionStatus">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workout Sessions Table -->
+                    <h3><i class="fas fa-dumbbell"></i> Workout Sessions</h3>
+                    <div class="table-container">
+                        <table id="sessionsTable">
+                            <thead>
+                            <tr>
+                                <th>Session Date</th>
+                                <th>Remaining Sessions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="sessionsTableBody">
+                            <tr>
+                                <td colspan="2" style="text-align: center;">
+                                    <div class="spinner" id="loadingSpinner"></div>
+                                    <div>Loading sessions...</div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Global variables
+    let memberId = null;
+    let memberData = null;
+    let workoutSessions = [];
+    let memberOffers = [];
+
+    // DOM Content Loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get member ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        memberId = urlParams.get('id');
+
+        if (memberId) {
+            loadMemberProfile(memberId);
+        } else {
+            document.getElementById('profileName').textContent = 'Error: No Member ID Provided';
+            showNotification('error', 'Error', 'No member ID provided in URL parameters');
+        }
+    });
+
+    // Load member profile data
+    // Load member profile data
+    async function loadMemberProfile(id) {
+        try {
+            showLoading(true);
+
+            // Load member data
+            const memberResponse = await fetch(`/api/members/${id}`);
+            if (!memberResponse.ok) {
+                throw new Error(`Failed to fetch member: ${memberResponse.status} ${memberResponse.statusText}`);
+            }
+            memberData = await memberResponse.json();
+
+            // Load workout sessions
+            const sessionsResponse = await fetch(`/api/workout-sessions/member/${id}`);
+            if (sessionsResponse.ok) {
+                workoutSessions = await sessionsResponse.json();
+            } else {
+                console.error('Failed to fetch workout sessions:', sessionsResponse.status);
+                workoutSessions = [];
+            }
+
+            // Load member offers
+            const offersResponse = await fetch(`/api/member-offers/member/${id}/active`);
+            if (offersResponse.ok) {
+                memberOffers = await offersResponse.json();
+            } else {
+                console.error('Failed to fetch member offers:', offersResponse.status);
+                memberOffers = [];
+            }
+
+            // Render the profile
+            renderMemberProfile();
+
+        } catch (error) {
+            console.error('Error loading member profile:', error);
+            document.getElementById('profileName').textContent = 'Error Loading Profile';
+            showNotification('error', 'Error', 'Failed to load member profile: ' + error.message);
+        } finally {
+            showLoading(false);
+        }
+    }
+    // Show/hide loading spinner
+    function showLoading(show) {
+        const spinner = document.getElementById('loadingSpinner');
+        const tableBody = document.getElementById('sessionsTableBody');
+
+        if (spinner) {
+            spinner.style.display = show ? 'block' : 'none';
+        }
+
+        if (show) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="2" style="text-align: center;">
+                        <div class="spinner"></div>
+                        <div>Loading sessions...</div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // Render member profile
+    function renderMemberProfile() {
+        if (!memberData) return;
+
+        // Set profile image
+        const profileImage = document.getElementById('profileImage');
+        if (memberData.imageUrl) {
+            profileImage.innerHTML = `<img src="${memberData.imageUrl}" alt="${memberData.fullName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+            profileImage.innerHTML = '<i class="fas fa-user"></i>';
+        }
+
+        // Set profile details
+        document.getElementById('profileName').textContent = memberData.fullName || 'N/A';
+        document.getElementById('profileId').textContent = memberData.id || 'N/A';
+        document.getElementById('profilePhone').textContent = memberData.phone || 'N/A';
+        document.getElementById('profileJoinDate').textContent = memberData.joinDate || 'N/A';
+
+        // Set status
+        const statusElement = document.getElementById('profileStatus');
+        if (memberData.status) {
+            statusElement.innerHTML = '<span class="status-badge status-active">Active</span>';
+        } else {
+            statusElement.innerHTML = '<span class="status-badge status-inactive">Inactive</span>';
+        }
+
+        // Set membership type
+        const membershipElement = document.getElementById('profileMembership');
+        const membershipType = memberData.membershipType || 'NORMAL';
+        membershipElement.innerHTML = `<span class="membership-badge membership-${membershipType}">${membershipType}</span>`;
+
+        // Render subscription info
+        renderSubscriptionInfo();
+
+        // Render workout sessions
+        renderWorkoutSessions();
+    }
+
+    // Render subscription information
+    function renderSubscriptionInfo() {
+        const activeOffer = memberOffers.length > 0 ? memberOffers[0] : null;
+
+        if (!activeOffer) {
+            document.getElementById('subscriptionOffer').textContent = 'No active subscription';
+            document.getElementById('subscriptionStart').textContent = '-';
+            document.getElementById('subscriptionEnd').textContent = '-';
+            document.getElementById('subscriptionRemaining').textContent = '-';
+            document.getElementById('subscriptionStatus').textContent = 'None';
+            document.querySelector('.subscription-card').style.opacity = '0.7';
+            return;
+        }
+
+        document.getElementById('subscriptionOffer').textContent = activeOffer.offer ? activeOffer.offer.title : `Offer #${activeOffer.offerId}`;
+        document.getElementById('subscriptionStart').textContent = activeOffer.startDate || '-';
+        document.getElementById('subscriptionEnd').textContent = activeOffer.endDate || '-';
+        document.getElementById('subscriptionRemaining').textContent = activeOffer.remainedSessions !== undefined ? activeOffer.remainedSessions : '-';
+
+        const statusElement = document.getElementById('subscriptionStatus');
+        statusElement.textContent = activeOffer.status || '-';
+
+        // Add color coding based on status
+        if (activeOffer.status === 'ACTIVE') {
+            statusElement.style.backgroundColor = 'rgba(76, 201, 240, 0.3)';
+        } else if (activeOffer.status === 'EXPIRED') {
+            statusElement.style.backgroundColor = 'rgba(229, 56, 59, 0.3)';
+        } else if (activeOffer.status === 'CANCELLED') {
+            statusElement.style.backgroundColor = 'rgba(108, 117, 125, 0.3)';
+        }
+    }
+
+    // Render workout sessions
+    function renderWorkoutSessions() {
+        const tableBody = document.getElementById('sessionsTableBody');
+
+        if (!workoutSessions || !Array.isArray(workoutSessions)) {
+            tableBody.innerHTML = '<tr><td colspan="2" class="error-message">Invalid sessions data format</td></tr>';
+            return;
+        }
+
+        if (workoutSessions.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="2" style="text-align: center;">No workout sessions found</td></tr>';
+            return;
+        }
+
+        tableBody.innerHTML = '';
+
+        // Sort sessions by date (newest first)
+        const sortedSessions = [...workoutSessions].sort((a, b) =>
+            new Date(b.sessionDate) - new Date(a.sessionDate)
+        );
+
+        // Get active offer for remaining sessions calculation
+        const activeOffer = memberOffers.length > 0 ? memberOffers[0] : null;
+
+        sortedSessions.forEach((session, index) => {
+            const row = document.createElement('tr');
+
+            // Calculate remaining sessions for this date
+            const remainingSessions = calculateRemainingSessions(session.sessionDate, activeOffer, sortedSessions, index);
+
+            row.innerHTML = `
+                <td>${formatDate(session.sessionDate) || 'N/A'}</td>
+                <td>${remainingSessions}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Format date for display
+    function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch (e) {
+            return dateString;
+        }
+    }
+
+    // Calculate remaining sessions for a specific date
+    function calculateRemainingSessions(sessionDate, activeOffer, allSessions, currentIndex) {
+        if (!activeOffer) return 'N/A';
+
+        // Find the index of this session in the sorted array
+        const sessionIndex = allSessions.findIndex(s => s.sessionDate === sessionDate);
+
+        if (sessionIndex === -1) return activeOffer.remainedSessions || 0;
+
+        // Count how many sessions happened after this one
+        const sessionsAfterThis = allSessions.length - sessionIndex - 1;
+
+        // Calculate remaining sessions: initial sessions minus sessions used after this one
+        const remaining = (activeOffer.remainedSessions || 0) + sessionsAfterThis;
+        return remaining >= 0 ? remaining : 0;
+    }
+
+    // Close profile modal
+    function closeProfileModal() {
+        // Since this is a separate page, we'll go back to the main page
+        window.history.back();
+    }
+
+    // Notification System
+    function showNotification(type, title, message, duration = 3000) {
+        // Create a simple notification for this page
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            z-index: 9999;
+            animation: slideIn 0.3s forwards, fadeOut 0.5s forwards 2.7s;
+            transform: translateX(100%);
+            opacity: 0;
+            max-width: 350px;
+        `;
+
+        if (type === 'success') {
+            notification.style.backgroundColor = '#4cc9f0';
+            notification.style.borderLeft = '4px solid #168aad';
+        } else if (type === 'error') {
+            notification.style.backgroundColor = '#e5383b';
+            notification.style.borderLeft = '4px solid #a4161a';
+        } else if (type === 'warning') {
+            notification.style.backgroundColor = '#f9c74f';
+            notification.style.color = '#212529';
+            notification.style.borderLeft = '4px solid #f8961e';
+        } else {
+            notification.style.backgroundColor = '#4895ef';
+            notification.style.borderLeft = '4px solid #3a56d4';
+        }
+
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' :
+            type === 'error' ? 'fa-exclamation-circle' :
+                type === 'warning' ? 'fa-exclamation-triangle' :
+                    'fa-info-circle'}" style="font-size: 1.2rem;"></i>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 4px;">${title}</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">${message}</div>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" style="background: transparent; border: none; color: inherit; cursor: pointer; opacity: 0.7; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto remove after duration
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, duration);
+    }
+
+    // Add keyframe animations for notifications
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            transform: translateY(-20px);
+            display: none;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+</body>
+</html>

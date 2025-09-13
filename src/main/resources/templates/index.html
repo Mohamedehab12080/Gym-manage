@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نادي BOB - الأعضاء</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern CSS Variables */
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #6c757d;
+            --success: #4cc9f0;
+            --danger: #e5383b;
+            --warning: #f9c74f;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Tahoma', Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: #f5f7f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mobile menu button (hidden by default) */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .menu-toggle span {
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        /* Main content area */
+        main {
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        /* Page-specific content styles */
+        .page-content {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-column p {
+            color: var(--gray-400);
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gray-700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--gray-700);
+            color: var(--gray-400);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 20px 0;
+                gap: 0;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                padding: 15px;
+                display: block;
+            }
+
+            .nav-links a:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Members Table Styles */
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        th {
+            background-color: var(--gray-50);
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        tr:hover {
+            background-color: var(--gray-50);
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c1121f;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-edit:hover {
+            background-color: #f8961e;
+            transform: translateY(-2px);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Navigation will be loaded here -->
+<div id="navbar">
+    <div style="text-align: center; padding: 20px; background: var(--primary); color: white;">
+        <div class="loading"></div> جاري تحميل القائمة...
+    </div>
+</div>
+
+<!-- Main Content -->
+<main>
+    <div class="container">
+        <div class="page-content">
+            <div class="page-header">
+                <h1>إدارة الأعضاء</h1>
+                <p>قم بإدارة أعضاء النادي، اشتراكاتهم، وسجلات الحضور</p>
+            </div>
+
+            <div class="actions-panel" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i> إضافة عضو جديد
+                </button>
+                <div class="filters" style="display: flex; gap: 15px;">
+                    <select style="padding: 10px; border-radius: var(--border-radius); border: 1px solid var(--gray-300);">
+                        <option>جميع الأعضاء</option>
+                        <option>النشطون فقط</option>
+                        <option>انتهت الاشتراك</option>
+                    </select>
+                    <input type="text" placeholder="ابحث في الأعضاء..." style="padding: 10px; border-radius: var(--border-radius); border: 1px solid var(--gray-300); min-width: 250px;">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>المعرف</th>
+                        <th>الاسم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>الهاتف</th>
+                        <th>نوع الاشتراك</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1001</td>
+                        <td>جون سميث</td>
+                        <td>john@example.com</td>
+                        <td>555 123 4567</td>
+                        <td>مميز</td>
+                        <td><span style="color: var(--success);">نشط</span></td>
+                        <td class="actions-cell">
+                            <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1002</td>
+                        <td>سارة جونسون</td>
+                        <td>sarah@example.com</td>
+                        <td>555 987 6543</td>
+                        <td>عادي</td>
+                        <td><span style="color: var(--success);">نشط</span></td>
+                        <td class="actions-cell">
+                            <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1003</td>
+                        <td>مايكل براون</td>
+                        <td>michael@example.com</td>
+                        <td>555 456 7890</td>
+                        <td>VIP</td>
+                        <td><span style="color: var(--danger);">منتهي</span></td>
+                        <td class="actions-cell">
+                            <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1004</td>
+                        <td>إيميلي ديفيس</td>
+                        <td>emily@example.com</td>
+                        <td>555 234 5678</td>
+                        <td>مميز</td>
+                        <td><span style="color: var(--success);">نشط</span></td>
+                        <td class="actions-cell">
+                            <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1005</td>
+                        <td>روبرت ويلسون</td>
+                        <td>robert@example.com</td>
+                        <td>555 876 5432</td>
+                        <td>عادي</td>
+                        <td><span style="color: var(--warning);">قيد الانتظار</span></td>
+                        <td class="actions-cell">
+                            <button class="btn btn-edit"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer will be loaded here -->
+<div id="footer">
+    <div style="text-align: center; padding: 20px; background: var(--gray-900); color: white;">
+        <div class="loading"></div> جاري تحميل التذييل...
+    </div>
+</div>
+
+<script>
+    // Define navigation and footer templates directly in JavaScript
+    const navigationTemplate = `
+            <header>
+                <div class="container">
+                    <nav>
+                        <a href="/" class="logo">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>نادي BOB</span>
+                        </a>
+
+                        <button class="menu-toggle" id="menuToggle">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+
+                        <div class="nav-links" id="navLinks">
+                            <a href="/">الرئيسية</a>
+                            <a href="/members">الأعضاء</a>
+                            <a href="/offers">العروض</a>
+                            <a href="#">الفصول</a>
+                            <a href="#">المدربون</a>
+                            <a href="#">اتصل بنا</a>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+        `;
+
+    const footerTemplate = `
+            <footer>
+                <div class="container">
+                    <div class="footer-content">
+                        <div class="footer-column">
+                            <h3>نظام إدارة نادي BOB</h3>
+                            <p>نقدم حلول إدارة صالات رياضية متطورة لمساعدة أعمال اللياقة البدنية على الازدهار في العصر الرقمي.</p>
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="footer-column">
+                            <h3>روابط سريعة</h3>
+                            <ul class="footer-links">
+                                <li><a href="/">الرئيسية</a></li>
+                                <li><a href="/members">الأعضاء</a></li>
+                                <li><a href="/offers">العروض</a></li>
+                                <li><a href="#">المدربون</a></li>
+                                <li><a href="#">الأسعار</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-column">
+                            <h3>المصادر</h3>
+                            <ul class="footer-links">
+                                <li><a href="#">المدونة</a></li>
+                                <li><a href="#">التوثيق</a></li>
+                                <li><a href="#">مركز المساعدة</a></li>
+                                <li><a href="#">توثيق API</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-column">
+                            <h3>اتصل بنا</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> شارع اللياقة 123، مدينة الصحة</p>
+                            <p><i class="fas fa-phone"></i> 555 123 4567+</p>
+                            <p><i class="fas fa-envelope"></i> info@bobgym.com</p>
+                        </div>
+                    </div>
+
+                    <div class="copyright">
+                        <p>© 2024 نظام إدارة نادي BOB. جميع الحقوق محفوظة.</p>
+                    </div>
+                </div>
+            </footer>
+        `;
+
+    // Function to load navigation
+    function loadNavigation() {
+        // Try to fetch from server first
+        fetch('/components/navigation.html')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Navigation file not found');
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('navbar').innerHTML = data;
+                initNavigation();
+            })
+            .catch(error => {
+                console.log('Using embedded navigation template');
+                // Use the embedded template if fetch fails
+                document.getElementById('navbar').innerHTML = navigationTemplate;
+                initNavigation();
+            });
+    }
+
+    // Function to load footer
+    function loadFooter() {
+        // Try to fetch from server first
+        fetch('/components/footer.html')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Footer file not found');
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('footer').innerHTML = data;
+            })
+            .catch(error => {
+                console.log('Using embedded footer template');
+                // Use the embedded template if fetch fails
+                document.getElementById('footer').innerHTML = footerTemplate;
+            });
+    }
+
+    // Initialize navigation functionality
+    function initNavigation() {
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+        }
+
+        // Highlight current page in navigation
+        const currentLocation = window.location.pathname;
+        const navItems = document.querySelectorAll('.nav-links a');
+
+        navItems.forEach(item => {
+            const itemPath = item.getAttribute('href');
+
+            // Handle root path
+            if (currentLocation === '/' && itemPath === '/') {
+                item.classList.add('active');
+                return;
+            }
+
+            // Handle other paths
+            if (currentLocation !== '/' && itemPath !== '/' && currentLocation.includes(itemPath)) {
+                item.classList.add('active');
+            } else if (currentLocation !== itemPath) {
+                item.classList.remove('active');
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navLinks && navLinks.classList.contains('active') &&
+                !e.target.closest('.nav-links') &&
+                !e.target.closest('.menu-toggle')) {
+                navLinks.classList.remove('active');
+                menuToggle.classList.remove('active');
+            }
+        });
+    }
+
+    // Load components when page is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        loadNavigation();
+        loadFooter();
+        console.log('تم تحميل نظام إدارة نادي BOB بنجاح');
+    });
+</script>
+</body>
+</html>
