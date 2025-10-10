@@ -8,6 +8,7 @@ import BOB.GymManagement.Gym.Management.System.entities.member.mapper.MemberMapp
 import BOB.GymManagement.Gym.Management.System.entities.member.service.MemberService;
 import BOB.GymManagement.Gym.Management.System.exception.DuplicatePhoneNumberException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,7 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.List;
+import java.util.List;import org.springframework.context.ApplicationContext;
+
 
 @RestController
 @RequestMapping("/api/members")
@@ -32,6 +34,40 @@ public class MembersController {
 
     private final MemberService memberService;
     private static final String UPLOAD_DIR = "uploads/";
+    private final ApplicationContext context;
+
+    @PostMapping("/shutdown")
+    public ResponseEntity<Map<String, String>> shutdown() {
+        System.out.println("Shutdown request received - Gym Management System will shut down");
+
+        // Create response first
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", "Gym Management System shutdown initiated");
+        responseBody.put("status", "success");
+
+        ResponseEntity<Map<String, String>> response = ResponseEntity.ok().body(responseBody);
+
+        // Shutdown in separate thread after response is sent
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000); // Wait 1 second to ensure response is delivered
+                System.out.println("Shutting down Gym Management System on port 8086...");
+
+                // Proper shutdown with exit code
+                int exitCode = SpringApplication.exit(context, () -> 0);
+                System.out.println("Spring application exited with code: " + exitCode);
+                System.exit(exitCode);
+
+            } catch (Exception e) {
+                System.err.println("Error during shutdown: " + e.getMessage());
+                // Force shutdown if graceful fails
+                System.exit(1);
+            }
+        }).start();
+
+        return response;
+    }
+
 
     @GetMapping
     public ResponseEntity<List<MemberVTO>> getAllMembers() {
@@ -165,14 +201,13 @@ public class MembersController {
             MultipartFile imageFile = memberDetails.getImageFile();
             String oldImageUrl = existingMember.getImageUrl();
 
-            // Update only non-null fields (partial update)
             if (memberDetails.getFullName() != null) {
                 existingMember.setFullName(memberDetails.getFullName());
             }
             if (memberDetails.getPhone() != null) {
                 MemberModel memberPh = memberService.getMemberByPhone(memberDetails.getPhone())
                         .orElseThrow(() -> new RuntimeException("Member with phone " + memberDetails.getPhone() + " not found"));
-                   if(memberPh.getId().equals(id)){
+                   if(!memberPh.getId().equals(id)){
                        throw new DuplicatePhoneNumberException("Phone number " + memberPh.getPhone() + " is already used");
                 }
                 existingMember.setPhone(memberDetails.getPhone());
@@ -182,15 +217,10 @@ public class MembersController {
             }
             existingMember.setStatus(memberDetails.isStatus());
 
-            // Handle image file upload if a new file is provided
             if (imageFile != null && !imageFile.isEmpty()) {
                 try {
-                    System.out.println("Loaded new image: " + imageFile.getOriginalFilename());
-
-                    // Delete the old image file if it exists
                     if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
                         try {
-                            // Extract just the filename from any type of URL/path
                             String oldFilename = extractFilenameFromUrl(oldImageUrl);
 
                             if (oldFilename != null) {
@@ -202,11 +232,9 @@ public class MembersController {
                             }
                         } catch (IOException e) {
                             System.err.println("Failed to delete old image: " + e.getMessage());
-                            // Continue with the update even if deletion fails
                         }
                     }
 
-                    // Upload the new image
                     String safeFilename = imageFile.getOriginalFilename().replaceAll("\\s+", "_");
                     String filename = UUID.randomUUID() + "_" + safeFilename;
                     Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -227,6 +255,7 @@ public class MembersController {
             memberService.update(existingMember);
             return ResponseEntity.ok(MemberMapper.toVTO(existingMember));
         } catch (Exception e) {
+            System.out.println("Exception Thrown : "+e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

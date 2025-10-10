@@ -101,7 +101,112 @@ function loadNavigation() {
       initNavigation();
     });
 }
+// إيقاف تشغيل النظام
+async function shutdownServer() {
+  const button = document.querySelector('.shutdown-btn');
+  const statusDiv = document.getElementById('status-message');
 
+  // تأكيد إيقاف التشغيل
+  if (!confirm('⚠️ هل أنت متأكد من رغبتك في إيقاف تشغيل نظام إدارة النادي؟\n\nهذا الإجراء سوف:\n• يوقف الخادم\n• يحرر المنفذ 8086\n• يجعل النظام غير متاح حتى إعادة التشغيل')) {
+    return;
+  }
+
+  // تعطيل الزر وعرض حالة التحميل
+  button.disabled = true;
+  button.innerHTML = '🔄 جاري الإيقاف...';
+  showStatus('جاري بدء عملية إيقاف النظام...', 'status-info');
+
+  try {
+    // إرسال طلب الإيقاف إلى الخادم
+    const response = await fetch('http://localhost:8086//api/members/shutdown', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      showStatus('✅ ' + data.message, 'status-success');
+
+      // تحديث حالة الزر
+      button.innerHTML = '✅ النظام متوقف';
+      button.style.backgroundColor = '#28a745';
+
+      // عرض الرسالة النهائية بعد تأخير
+      setTimeout(() => {
+        showStatus('🚪 تم تحرير المنفذ 8086. يمكنك إعادة تشغيل النظام عند الحاجة.', 'status-info');
+      }, 3000);
+
+    } else {
+      throw new Error(`خطأ في الخادم: ${response.status}`);
+    }
+
+  } catch (error) {
+    // هذا متوقع - الخادم يتوقف لذا ستفشل الاتصالات
+    console.log('تم إكمال إيقاف الخادم');
+    showStatus('✅ تم إيقاف النظام بنجاح. تم تحرير المنفذ 8086.', 'status-success');
+
+    // تحديث الزر
+    button.innerHTML = '✅ متوقف';
+    button.style.backgroundColor = '#28a745';
+    button.disabled = true;
+  }
+}
+
+// عرض رسائل الحالة
+function showStatus(message, className) {
+  const statusDiv = document.getElementById('status-message');
+  if (!statusDiv) {
+    console.warn('عنصر رسائل الحالة غير موجود');
+    return;
+  }
+
+  statusDiv.textContent = message;
+  statusDiv.className = className;
+  statusDiv.style.display = 'block';
+
+  // إخفاء تلقائي بعد 5 ثواني
+  setTimeout(() => {
+    statusDiv.style.display = 'none';
+  }, 5000);
+}
+
+// التحقق من حالة الخادم عند تحميل الصفحة
+async function checkServerStatus() {
+  try {
+    const response = await fetch('http://localhost:8086/api/health', {
+      method: 'GET'
+    });
+
+    if (response.ok) {
+      console.log('✅ الخادم يعمل على المنفذ 8086');
+      return true;
+    }
+  } catch (error) {
+    console.log('❌ الخادم غير متاح');
+    const button = document.querySelector('.shutdown-btn');
+    if (button) {
+      button.innerHTML = '❌ الخادم متوقف';
+      button.style.backgroundColor = '#6c757d';
+      button.disabled = true;
+    }
+    return false;
+  }
+}
+
+// تحديث وظيفة تحميل الصفحة للتحقق من حالة الخادم
+document.addEventListener("DOMContentLoaded", function () {
+  loadNavigation();
+  loadFooter();
+
+  // التحقق من حالة الخادم بعد تحميل التنقل
+  setTimeout(() => {
+    checkServerStatus();
+  }, 1000);
+
+  console.log("تم تحميل نظام إدارة نادي BOB بنجاح");
+});
 // Function to load footer
 function loadFooter() {
   // Try to fetch from server first

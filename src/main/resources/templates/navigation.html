@@ -3,7 +3,7 @@
         <nav>
             <a href="/" class="logo">
                 <i class="fas fa-dumbbell"></i>
-                <span>BOB Gym</span>
+                <span>Cisco Gym</span>
             </a>
 
             <button class="menu-toggle" id="menuToggle">
@@ -19,7 +19,14 @@
                 <a href="#">Classes</a>
                 <a href="#">Trainers</a>
                 <a href="#">Contact</a>
+                <!-- Add shutdown button here -->
+                <button class="shutdown-btn" onclick="shutdownServer()" title="Shutdown System">
+                    ⏻ Shutdown
+                </button>
             </div>
         </nav>
     </div>
 </header>
+
+<!-- Status message display -->
+<div id="status-message" style="display: none;"></div>
